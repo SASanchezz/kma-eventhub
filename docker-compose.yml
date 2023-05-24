@@ -1,0 +1,46 @@
+version: '3'
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - 80:3000
+    depends_on:
+      - db
+    environment:
+      IS_DOCKERED: 'true'
+
+  db:
+    container_name: db
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./docker/db:/docker-entrypoint-initdb.d/
+      - ./docker/var/db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    volumes:
+      - /sessions
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  db:
