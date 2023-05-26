@@ -1,14 +1,10 @@
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import moment from 'moment';
+import { TokensPairDto } from 'src/modules/auth/dto/token-pair.dto';
 
 export interface UserSession {
   userId: string;
-}
-
-export interface TokensPair {
-  token: string;
-  refreshToken: string;
 }
 
 export const createToken = (payload: UserSession): string => {
@@ -31,7 +27,7 @@ export const createRefreshToken = (token: string): string => {
   return crypto.randomBytes(64).toString('base64') + token.slice(-6);
 };
 
-export const createTokensPair = (userSession: UserSession): TokensPair => {
+export const createTokensPair = (userSession: UserSession): TokensPairDto => {
   const token = createToken(userSession);
   const refreshToken = createRefreshToken(token);
 

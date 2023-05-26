@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
-import { UserDetails } from './types/users.user-details';
+import { UserDetailsDto } from './dto/user-details.dto';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Users {
@@ -39,7 +39,7 @@ export class Users {
   @DeleteDateColumn({ default: null })
   deleted_at: string;
 
-  get details(): UserDetails {
+  get details(): UserDetailsDto {
     return {
       id: this.id,
       email: this.email,

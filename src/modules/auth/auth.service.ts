@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as moment from 'moment';
-import { TokensPair, UserSession, createTokensPair } from 'src/utils/jwt';
+import { UserSession, createTokensPair } from 'src/utils/jwt';
 import { Users } from 'src/modules/users/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import { TokensPairDto } from './dto/token-pair.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +16,7 @@ export class AuthService {
     private usersRepository: Repository<Users>,
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<TokensPair> {
+  async register(createUserDto: CreateUserDto): Promise<TokensPairDto> {
     const user = await this.usersRepository.findOneBy({ email: createUserDto.email });
     if (user) {
       throw new BadRequestException('User with this email already exists');
@@ -34,12 +36,12 @@ export class AuthService {
     return tokens;
   }
 
-  async login(email: string, password: string): Promise<TokensPair> {
-    const user = await this.usersRepository.findOneBy({ email });
+  async login(loginDto: LoginDto): Promise<TokensPairDto> {
+    const user = await this.usersRepository.findOneBy({ email: loginDto.email });
     if (!user) {
       throw new BadRequestException('Email or password is incorrect');
     }
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordCorrect) {
       throw new BadRequestException('Email or password is incorrect');
     }
