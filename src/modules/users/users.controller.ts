@@ -1,7 +1,8 @@
-import { Controller, Param, Get, NotFoundException } from '@nestjs/common';
+import { Controller, Param, Get, NotFoundException, Put, Body } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserDetailsDto } from './dto/user-details.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 
 @ApiTags('route to manage user entity')
@@ -19,7 +20,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiCreatedResponse({ type: UserDetailsDto })
-  async getOne(@Param('id') id: string): Promise<UserDetailsDto> {
+  async getOne(@Param('id') id: number): Promise<UserDetailsDto> {
     const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -27,10 +28,10 @@ export class UsersController {
     return user.details;
   }
 
-  // @Put(':id')
-  // async update(@Body() updateUserDto: UpdateUserDto, @Param('id') id: string): Promise<UserDetails> {
-  //   const user = await this.usersService.update(id, updateUserDto);
+  @Put(':id')
+  async update(@Body() updateUserDto: UpdateUserDto, @Param('id') id: number): Promise<UserDetailsDto> {
+    const user = await this.usersService.update(id, updateUserDto);
 
-  //   return user.details
-  // }
+    return user.details
+  }
 }

@@ -3,23 +3,17 @@ import { UserDetailsDto } from './dto/user-details.dto';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Users {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
   @Column({ unique: true, default: null })
   email: string;
-
-  @Column({ default: null })
-  phone: string;
 
   @Column()
   name: string;
 
   @Column()
   surname: string;
-
-  @Column({ default: null })
-  patronymic: string;
 
   @Column()
   password: string;
@@ -43,12 +37,9 @@ export class Users {
     return {
       id: this.id,
       email: this.email,
-      phone: this.phone,
       name: this.name,
       surname: this.surname,
-      patronymic: this.patronymic,
       created_at: this.created_at,
     }
   }
-
 }
