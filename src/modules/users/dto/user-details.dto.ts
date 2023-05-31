@@ -2,13 +2,10 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class UserDetailsDto {
   @ApiProperty()
-  id: string;
+  id: number;
   
   @ApiProperty()
   email: string;
-
-  @ApiProperty()
-  phone: string;
 
   @ApiProperty()
   name: string;
@@ -16,9 +13,6 @@ export class UserDetailsDto {
   @ApiProperty()
   surname: string;
 
-  @ApiProperty()
-  patronymic: string;
-  
   @ApiProperty()
   created_at: string;
 }

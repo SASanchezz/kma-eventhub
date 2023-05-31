@@ -4,7 +4,7 @@ import moment from 'moment';
 import { TokensPairDto } from 'src/modules/auth/dto/token-pair.dto';
 
 export interface UserSession {
-  userId: string;
+  userId: number;
 }
 
 export const createToken = (payload: UserSession): string => {
