@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { StudentOrganisations } from "src/modules/student-organisations/student-organisations.entity";
 import { Users } from "src/modules/users/users.entity";
 
 export const dbConfig: TypeOrmModuleOptions = {
@@ -8,6 +9,6 @@ export const dbConfig: TypeOrmModuleOptions = {
   username: 'root',
   password: 'myrootpassword',
   database: 'app',
-  entities: [Users],
+  entities: [Users, StudentOrganisations],
   synchronize: true,
 }
