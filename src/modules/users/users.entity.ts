@@ -24,8 +24,8 @@ export class Users {
   @Column({ default: null })
   imageUrl: string;
 
-  @Column()
-  password: string;
+  @Column({ default: null})
+  password?: string;
 
   @Column({ default: null })
   refreshToken: string;
