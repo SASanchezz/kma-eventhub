@@ -14,5 +14,8 @@ export class UserDetailsDto {
   surname: string;
 
   @ApiProperty()
+  imageUrl: string;
+
+  @ApiProperty()
   created_at: string;
 }

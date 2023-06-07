@@ -1,4 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { EventDetailsDto } from "src/modules/events/dto/events-details.dto";
+import { Events } from "src/modules/events/events.entity";
 import { UserDetailsDto } from "src/modules/users/dto/user-details.dto";
 
 export class StudentOrganisationDetailsDto {
@@ -17,11 +19,11 @@ export class StudentOrganisationDetailsDto {
   @ApiProperty()
   followers: UserDetailsDto[]
 
-  // @ApiProperty()
-  // upcomin_events: Object; //TODO when event entity will be created
+  @ApiProperty()
+  upcomingEvents: EventDetailsDto[];
 
-  // @ApiProperty()
-  // finished_events: Object; //TODO when event entity will be created
+  @ApiProperty()
+  finishedEvents: EventDetailsDto[];
 
   @ApiProperty()
   socialMedia: string[];

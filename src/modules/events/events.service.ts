@@ -68,17 +68,18 @@ export class EventsService {
   }
 
   async findOne(id: number): Promise<Events | null> {
-    return this.eventsRepository.findOneBy({ id });
+    return await this.eventsRepository.findOneBy({ id });
   }
 
   async create(createEventDto: CreateEventDto): Promise<Events> {
-    const SO = this.SORepository.findOneBy({ id: createEventDto.organisationId });
+    const SO = await this.SORepository.findOneBy({ id: createEventDto.organisationId });
     if (!SO) {
       throw new NotFoundException('Student organisation by organisationId not found');
-    } 
+    }
 
     const newEvent = this.eventsRepository.create(createEventDto);
     await this.eventsRepository.save(newEvent);
+    SO.addEvent(newEvent);
 
     return newEvent;
   }
