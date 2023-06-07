@@ -17,5 +17,5 @@ export class UserDetailsDto {
   imageUrl: string;
 
   @ApiProperty()
-  created_at: string;
+  createdAt: string;
 }

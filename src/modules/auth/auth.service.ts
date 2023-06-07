@@ -28,8 +28,8 @@ export class AuthService {
     const jwtPayload: UserSession = { userId: newUser.id };
     const tokens = createTokensPair(jwtPayload);
 
-    newUser.refresh_token = tokens.refreshToken;
-    newUser.refresh_token_issued_at = moment().format('YYYY-MM-DD HH:mm:ss');
+    newUser.refreshToken = tokens.refreshToken;
+    newUser.refreshTokenIssuedAt = moment().format('YYYY-MM-DD HH:mm:ss');
 
     await this.usersRepository.save(newUser);
 

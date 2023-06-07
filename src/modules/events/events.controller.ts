@@ -1,5 +1,5 @@
 import { Controller, Param, Get, NotFoundException, Post, Body, Put, Query, Delete } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { EventsService } from './events.service';
 import { EventDetailsAndCountDto, EventDetailsDto } from './dto/events-details.dto';
 import { CreateEventDto } from './dto/create-events.dto';

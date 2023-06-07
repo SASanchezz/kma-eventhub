@@ -38,8 +38,8 @@ export class EventsService {
 
     return this.eventsRepository.findAndCount({
       where,
-      skip: offset,
-      take: limit,
+      skip: offset ?? 0,
+      take: limit ?? 10,
     });
   }
 
@@ -60,8 +60,8 @@ export class EventsService {
         { dateTime },
       ],
       order: { dateTime: 'DESC' },
-      skip: offset,
-      take: limit,
+      skip: offset ?? 0,
+      take: limit ?? 10,
     });
 
     return [similarEvents, 200];
