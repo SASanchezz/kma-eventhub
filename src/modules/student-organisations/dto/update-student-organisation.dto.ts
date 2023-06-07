@@ -8,29 +8,29 @@ export class UpdateStudentOrganisationDto {
     @IsOptional()
     @IsEmail()
     @MaxLength(255)
-    email: string;
+    email?: string;
     
     @ApiProperty({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    name: string;
+    name?: string;
   
     @ApiProperty({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(1023)
-    description: string;
+    description?: string;
 
     @ApiProperty({ type: Array })
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
-    socialMedia: string;
+    socialMedia?: string;
   
     @ApiProperty({ type: String })
     @IsOptional()
     @IsUrl()
     @MaxLength(255)
-    logoUrl: string;
+    logoUrl?: string;
 }

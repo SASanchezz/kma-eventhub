@@ -7,11 +7,11 @@ export class UpdateUserDto {
 	@IsOptional()
 	@IsString()
 	@MaxLength(255)
-	readonly name: string;
+	readonly name?: string;
 
 	@ApiProperty({ type: String })
 	@IsOptional()
 	@IsString()
 	@MaxLength(255)
-	readonly surname: string;
+	readonly surname?: string;
 }

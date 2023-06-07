@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { StudentOrganisationDetailsDto } from './dto/student-organisations-details.dto';
 import { UserDetailsDto } from '../users/dto/user-details.dto';
+import * as moment from 'moment';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class StudentOrganisations {
@@ -50,7 +51,7 @@ export class StudentOrganisations {
       // finished_events: this.finished_events,
       socialMedia: this.socialMedia.split(' '),
       logoUrl: this.logoUrl,
-      createdAt: this.createdAt,
+      createdAt: moment(this.createdAt).format('YYYY-MM-DD HH:mm:ss'),
     }
   }
 

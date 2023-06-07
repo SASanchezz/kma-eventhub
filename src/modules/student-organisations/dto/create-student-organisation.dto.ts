@@ -29,7 +29,7 @@ export class CreateStudentOrganisationDto {
     @IsOptional()
     @IsString()
     @MaxLength(1023)
-    description: string;
+    description?: string;
   
     @ApiProperty({
         type: Array,
@@ -38,7 +38,7 @@ export class CreateStudentOrganisationDto {
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
-    socialMedia: string;
+    socialMedia?: string;
 
     @ApiProperty({
         type: String,
@@ -47,5 +47,5 @@ export class CreateStudentOrganisationDto {
     @IsOptional()
     @IsUrl()
     @MaxLength(255)
-    logoUrl: string;
+    logoUrl?: string;
 }
