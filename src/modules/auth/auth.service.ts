@@ -8,6 +8,7 @@ import { Users } from 'src/modules/users/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { TokensPairDto } from './dto/token-pair.dto';
+import { EmailAuthDto } from './dto/email-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +49,22 @@ export class AuthService {
 
     const jwtPayload: UserSession = { userId: user.id };
     const tokens = createTokensPair(jwtPayload);
+
+    return tokens;
+  }
+
+  async emailAuth(emailAuthDto: EmailAuthDto): Promise<TokensPairDto> {
+    let user = await this.usersRepository.findOneBy({ email: emailAuthDto.email });
+    if (!user) {
+      user = this.usersRepository.create(emailAuthDto);
+    }
+
+    const jwtPayload: UserSession = { userId: user.id };
+    const tokens = createTokensPair(jwtPayload);
+    user.refreshToken = tokens.refreshToken;
+    user.refreshTokenIssuedAt = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    await this.usersRepository.save(user);
 
     return tokens;
   }

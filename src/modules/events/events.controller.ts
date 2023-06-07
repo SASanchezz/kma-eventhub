@@ -6,6 +6,7 @@ import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/update-events.dto';
 import { ListAllEventsDto } from './dto/list-all-events.dto';
 import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
+import { LikeEventDto } from './dto/like-event.dto';
 
 
 @ApiTags('route to manage event entity')
@@ -65,5 +66,15 @@ export class EventsController {
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     await this.eventService.delete(id);
+  }
+
+  @Post('like')
+  async likeEvent(@Body() likeEventDto: LikeEventDto): Promise<void> {
+    await this.eventService.likeEvent(likeEventDto);
+  }
+
+  @Post('unlike')
+  async unlikeEvent(@Body() likeEventDto: LikeEventDto): Promise<void> {
+    await this.eventService.unlikeEvent(likeEventDto);
   }
 }

@@ -14,6 +14,12 @@ export class UserDetailsDto {
   surname: string;
 
   @ApiProperty()
+  likes: number[];
+
+  @ApiProperty()
+  follows: number[];
+
+  @ApiProperty()
   imageUrl: string;
 
   @ApiProperty()

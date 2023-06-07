@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { StudentOrganisationDetailsDto } from './dto/student-organisations-details.dto';
 import * as moment from 'moment';
 import { Events } from '../events/events.entity';
-import { Users } from '../users/users.entity';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class StudentOrganisations {
@@ -24,9 +23,8 @@ export class StudentOrganisations {
   @Column({ default: null })
   logoUrl: string;
 
-  @ManyToMany(() => Users)
-  @JoinTable()   
-  followers: Users[];
+  @Column({ default: 0 })
+  followers: number;
 
   @OneToMany(() => Events, event => event.organisation, {
     cascade: true,
@@ -60,22 +58,14 @@ export class StudentOrganisations {
     }
   }
 
-  addFollower(user: Users) {
-    if (!this.followers) {
-      this.followers = new Array<Users>();
-    }
-    this.followers.push(user);
+  incrementFollowers() {
+    this.followers++;
   }
 
-  removeFollower(user: Users) {
-    if (!this.followers) {
-      return;
-    }
-    const index = this.followers.findIndex(follower => follower.id === user.id);
-    if (index !== -1) {
-      this.followers.splice(index, 1);
-    }
+  decrementFollowers() {
+    this.followers--;
   }
+
 
   get details(): StudentOrganisationDetailsDto {
     return {
@@ -83,8 +73,8 @@ export class StudentOrganisations {
       name: this.name,
       email: this.email,
       description: this.description,
-      followers: this.followers?.map(follower => follower.details) ?? [],
-      socialMedia: this.socialMedia.split(' '),
+      followers: this.followers,
+      socialMedia: this.socialMedia?.trim().split(' '),
       logoUrl: this.logoUrl,
       createdAt: moment(this.createdAt).format('YYYY-MM-DD HH:mm:ss'),
       upcomingEvents: this.events

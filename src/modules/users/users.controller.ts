@@ -18,10 +18,10 @@ export class UsersController {
     return users.map(user => user.details);
   }
 
-  @Get(':id')
+  @Get(':email')
   @ApiCreatedResponse({ type: UserDetailsDto })
-  async getOne(@Param('id') id: number): Promise<UserDetailsDto> {
-    const user = await this.usersService.findOne(id);
+  async getOne(@Param('email') email: string): Promise<UserDetailsDto> {
+    const user = await this.usersService.findOne(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }

@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { TokensPairDto } from './dto/token-pair.dto';
+import { EmailAuthDto } from './dto/email-auth.dto';
 
 
 @ApiTags('route for authentification')
@@ -23,6 +24,14 @@ export class AuthController {
   @ApiCreatedResponse({ type: TokensPairDto })
   async login(@Body() loginDto: LoginDto): Promise<TokensPairDto> {
     const tokens = await this.authService.login(loginDto);
+
+    return tokens
+  }
+
+  @Post('/email-auth')
+  @ApiCreatedResponse({ type: TokensPairDto })
+  async emailAuth(@Body() emailAuthDto: EmailAuthDto): Promise<TokensPairDto> {
+    const tokens = await this.authService.emailAuth(emailAuthDto);
 
     return tokens
   }
