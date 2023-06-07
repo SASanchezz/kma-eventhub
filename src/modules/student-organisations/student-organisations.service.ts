@@ -4,18 +4,21 @@ import { StudentOrganisations } from './student-organisations.entity';
 import { Repository } from 'typeorm';
 import { UpdateStudentOrganisationDto } from './dto/update-student-organisation.dto';
 import { CreateStudentOrganisationDto } from './dto/create-student-organisation.dto';
+import { FollowOrganisationDto } from './dto/follow-student-organisation.dto';
+import { Users } from '../users/users.entity';
 
 @Injectable()
 export class StudentOrganisationsService {
   constructor(
     @InjectRepository(StudentOrganisations)
     private studentOrganisationsRepository: Repository<StudentOrganisations>,
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
   ) {}
 
   async find(): Promise<StudentOrganisations[]> {
     return this.studentOrganisationsRepository.find({
       relations: {
-        followers: true,
         events: true,
       },
     });
@@ -25,7 +28,6 @@ export class StudentOrganisationsService {
     return this.studentOrganisationsRepository.findOne({
       where: { id },
       relations: {
-        followers: true,
         events: true,
       },
     });
@@ -67,4 +69,42 @@ export class StudentOrganisationsService {
     return this.studentOrganisationsRepository.save(SO);
   }
 
+  async follow(followOrganisationDto: FollowOrganisationDto): Promise<void> {
+    const { userId, organisationId } = followOrganisationDto;
+    const organisation = await this.studentOrganisationsRepository.findOneBy({ id: organisationId });
+    if (!organisation) {
+      throw new NotFoundException('Organisation not found');
+    }
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.isFollowed(organisationId)) {
+      throw new BadRequestException('User already follows this organisation');
+    }
+
+    user.followOrganisation(organisationId);
+    organisation.incrementFollowers();
+
+    await this.studentOrganisationsRepository.save(organisation);
+    await this.usersRepository.save(user);
+  }
+
+  async unfollow(followOrganisationDto: FollowOrganisationDto): Promise<void> {
+    const { userId, organisationId } = followOrganisationDto;
+    const organisation = await this.studentOrganisationsRepository.findOneBy({ id: organisationId });
+    if (!organisation) {
+      throw new NotFoundException('Organisation not found');
+    }
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.unFollowOrganisation(organisationId);
+    organisation.decrementFollowers();
+
+    await this.studentOrganisationsRepository.save(organisation);
+    await this.usersRepository.save(user);
+  }
 }

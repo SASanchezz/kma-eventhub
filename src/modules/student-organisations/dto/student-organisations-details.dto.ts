@@ -15,8 +15,8 @@ export class StudentOrganisationDetailsDto {
   @ApiProperty()
   description: string;
 
-  @ApiProperty({ type: [UserDetailsDto]})
-  followers: UserDetailsDto[]
+  @ApiProperty()
+  followers: number
 
   @ApiProperty({ type: [EventDetailsDto]})
   upcomingEvents: EventDetailsDto[];

@@ -26,4 +26,12 @@ export class AuthController {
 
     return tokens
   }
+
+  @Post('/email-auth')
+  @ApiCreatedResponse({ type: TokensPairDto })
+  async emailAuth(@Body() createUserDto: CreateUserDto): Promise<TokensPairDto> {
+    const tokens = await this.authService.register(createUserDto);
+
+    return tokens
+  }
 }
