@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { EventDetailsDto } from './dto/events-details.dto';
 import * as moment from 'moment';
+import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Events {
@@ -39,6 +40,9 @@ export class Events {
 
   @Column({ default: null })
   linkToRegister?: string;
+
+  @ManyToOne(() => StudentOrganisations, so => so.events)
+  organisation: StudentOrganisations;
 
   @CreateDateColumn()
   createdAt: string;

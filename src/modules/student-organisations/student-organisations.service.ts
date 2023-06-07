@@ -13,11 +13,22 @@ export class StudentOrganisationsService {
   ) {}
 
   async find(): Promise<StudentOrganisations[]> {
-    return this.studentOrganisationsRepository.find();
+    return this.studentOrganisationsRepository.find({
+      relations: {
+        followers: true,
+        events: true,
+      },
+    });
   }
 
   async findOne(id: number): Promise<StudentOrganisations | null> {
-    return this.studentOrganisationsRepository.findOneBy({ id });
+    return this.studentOrganisationsRepository.findOne({
+      where: { id },
+      relations: {
+        followers: true,
+        events: true,
+      },
+    });
   }
 
   async create(createSODto: CreateStudentOrganisationDto): Promise<StudentOrganisations> {

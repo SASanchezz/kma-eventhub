@@ -13,15 +13,6 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: String,
-        description: 'This is an optional property',
-    })
-    @IsOptional()
-    @IsPhoneNumber('UA')
-    @MaxLength(255)
-    readonly phone?: string;
-    
-    @ApiProperty({
-        type: String,
         description: 'This is a required property',
     })
     @IsNotEmpty()

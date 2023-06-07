@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, JoinTable, ManyToMany, OneToMany, JoinColumn } from 'typeorm';
 import { StudentOrganisationDetailsDto } from './dto/student-organisations-details.dto';
-import { UserDetailsDto } from '../users/dto/user-details.dto';
 import * as moment from 'moment';
+import { Events } from '../events/events.entity';
+import { Users } from '../users/users.entity';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class StudentOrganisations {
@@ -17,19 +18,20 @@ export class StudentOrganisations {
   @Column({ default: '' })
   description: string;
 
-  followers: UserDetailsDto[];
-
-  // @Column({ default: null })
-  // upcoming_events: Object; //TODO when event entity will be created
-
-  // @Column({ default: null })
-  // finished_events: Object; //TODO when event entity will be created
-
   @Column({ default: null })
   socialMedia: string;
 
   @Column({ default: null })
   logoUrl: string;
+
+  @ManyToMany(() => Users)
+  @JoinTable()   
+  followers: Users[];
+
+  @OneToMany(() => Events, event => event.organisation, {
+    cascade: true,
+  })
+  events: Events[];
 
   @CreateDateColumn()
   createdAt: string;
@@ -40,18 +42,57 @@ export class StudentOrganisations {
   @DeleteDateColumn({ default: null })
   deletedAt: string;
 
+
+  addEvent(event: Events) {
+    if (!this.events) {
+      this.events = new Array<Events>();
+    }
+    this.events.push(event);
+  }
+
+  removeEvent(event: Events) {
+    if (!this.events) {
+      return;
+    }
+    const index = this.events.findIndex(e => e.id === event.id);
+    if (index !== -1) {
+      this.events.splice(index, 1);
+    }
+  }
+
+  addFollower(user: Users) {
+    if (!this.followers) {
+      this.followers = new Array<Users>();
+    }
+    this.followers.push(user);
+  }
+
+  removeFollower(user: Users) {
+    if (!this.followers) {
+      return;
+    }
+    const index = this.followers.findIndex(follower => follower.id === user.id);
+    if (index !== -1) {
+      this.followers.splice(index, 1);
+    }
+  }
+
   get details(): StudentOrganisationDetailsDto {
     return {
       id: this.id,
       name: this.name,
       email: this.email,
       description: this.description,
-      followers: this.followers,
-      // upcomin_events: this.upcomin_events,
-      // finished_events: this.finished_events,
+      followers: this.followers?.map(follower => follower.details) ?? [],
       socialMedia: this.socialMedia.split(' '),
       logoUrl: this.logoUrl,
       createdAt: moment(this.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      upcomingEvents: this.events
+        ?.filter(event => moment(event.dateTime).isAfter(moment()))
+        ?.map(event => event.details) ?? [],
+      finishedEvents: this.events
+        ?.filter(event => moment(event.dateTime).isBefore(moment()))
+        ?.map(event => event.details) ?? [],
     }
   }
 
