@@ -23,19 +23,19 @@ export class Users {
   password: string;
 
   @Column({ default: null })
-  refresh_token: string;
+  refreshToken: string;
 
   @Column({ default: null })
-  refresh_token_issued_at: string;
+  refreshTokenIssuedAt: string;
 
   @CreateDateColumn()
-  created_at: string;
+  createdAt: string;
 
   @UpdateDateColumn()
-  updated_at: string;
+  updatedAt: string;
 
   @DeleteDateColumn({ default: null })
-  deleted_at: string;
+  deletedAt: string;
 
   get details(): UserDetailsDto {
     return {
@@ -44,7 +44,7 @@ export class Users {
       name: this.name,
       surname: this.surname,
       imageUrl: this.imageUrl,
-      created_at: this.created_at,
+      createdAt: this.createdAt,
     }
   }
 }
