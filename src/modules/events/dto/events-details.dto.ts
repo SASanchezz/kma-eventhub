@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { UserDetailsDto } from "src/modules/users/dto/user-details.dto";
 
 export class EventDetailsDto {
   @ApiProperty()
@@ -40,4 +39,12 @@ export class EventDetailsDto {
   
   @ApiProperty()
   createdAt: string;
+}
+
+export class EventDetailsAndCountDto {
+  @ApiProperty({ type: [EventDetailsDto] })
+  events: EventDetailsDto[];
+
+  @ApiProperty()
+  count: number;
 }

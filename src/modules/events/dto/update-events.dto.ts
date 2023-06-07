@@ -20,7 +20,7 @@ export class UpdateEventDto {
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    textPreview: string;
+    textPreview?: string;
   
     @ApiProperty({ type: String })
     @IsNotEmpty()
@@ -31,39 +31,34 @@ export class UpdateEventDto {
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
-    tags: string;
-
-    @ApiProperty({ type: Number })
-    @IsNotEmpty()
-    @IsNumber()
-    organisationId: number;
+    tags?: string;
 
     @ApiProperty({ type: Array })
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
-    partnerIds: string;
+    partnerIds?: string;
 
     @ApiProperty({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    location: string;
+    location?: string;
 
     @ApiProperty({ type: Number })
     @IsOptional()
     @IsString()
-    price: number;
+    price?: number;
 
     @ApiProperty({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    imageUrl: string;
+    imageUrl?: string;
 
     @ApiProperty({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    linkToRegister: string;
+    linkToRegister?: string;
 }

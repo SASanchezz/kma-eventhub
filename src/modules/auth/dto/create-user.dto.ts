@@ -18,7 +18,7 @@ export class CreateUserDto {
     @IsOptional()
     @IsPhoneNumber('UA')
     @MaxLength(255)
-    readonly phone: string;
+    readonly phone?: string;
     
     @ApiProperty({
         type: String,
@@ -45,7 +45,7 @@ export class CreateUserDto {
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    readonly patronymic: string;
+    readonly patronymic?: string;
 
     @ApiProperty({
         type: String,

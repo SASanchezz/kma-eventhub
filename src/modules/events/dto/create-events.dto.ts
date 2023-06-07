@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString, IsNumber } from "class-validator";
+import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString, IsNumber, IsNumberString } from "class-validator";
 
 
 export class CreateEventDto {
@@ -29,7 +29,7 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    textPreview: string;
+    textPreview?: string;
   
     @ApiProperty({
         type: String,
@@ -46,7 +46,7 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
-    tags: string;
+    tags?: string;
 
     @ApiProperty({
         type: Number,
@@ -54,6 +54,7 @@ export class CreateEventDto {
     })
     @IsNotEmpty()
     @IsNumber()
+    @Transform(({ value }) => Number(value))
     organisationId: number;
 
     @ApiProperty({
@@ -63,7 +64,7 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
-    partnerIds: string;
+    partnerIds?: string;
 
     @ApiProperty({
         type: String,
@@ -72,7 +73,7 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    location: string;
+    location?: string;
 
     @ApiProperty({
         type: String,
@@ -80,16 +81,7 @@ export class CreateEventDto {
     })
     @IsOptional()
     @IsString()
-    price: number;
-
-    @ApiProperty({
-        type: String,
-        description: 'This is an optional property',
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(255)
-    imageUrl: string;
+    price?: number;
 
     @ApiProperty({
         type: String,
@@ -98,5 +90,14 @@ export class CreateEventDto {
     @IsOptional()
     @IsString()
     @MaxLength(255)
-    linkToRegister: string;
+    imageUrl?: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'This is an optional property',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    linkToRegister?: string;
 }

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { EventDetailsDto } from './dto/events-details.dto';
-import { UserDetailsDto } from '../users/dto/user-details.dto';
+import * as moment from 'moment';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Events {
@@ -14,31 +14,31 @@ export class Events {
   text: string;
 
   @Column({ default: null })
-  textPreview: string;
+  textPreview?: string;
 
   @Column()
   dateTime: string;
 
   @Column({ default: null })
-  tags: string;
+  tags?: string;
 
   @Column()
   organisationId: number;
 
   @Column({ default: null })
-  partnerIds: string;
+  partnerIds?: string;
 
   @Column({ default: null })
-  location: string;
+  location?: string;
 
   @Column({ default: null })
-  price: number;
+  price?: number;
 
   @Column({ default: null })
-  imageUrl: string;
+  imageUrl?: string;
 
   @Column({ default: null })
-  linkToRegister: string;
+  linkToRegister?: string;
 
   @CreateDateColumn()
   createdAt: string;
@@ -55,15 +55,15 @@ export class Events {
       title: this.title,
       text: this.text,
       textPreview: this.textPreview,
-      dateTime: this.dateTime,
-      tags: this.tags,
+      dateTime: moment(this.dateTime).format('YYYY-MM-DD HH:mm:ss'),
+      tags: this.tags?.split(' '),
       organisationId: this.organisationId,
-      partnerIds: this.partnerIds,
+      partnerIds: this.partnerIds?.split(' ').map(Number),
       location: this.location,
       price: this.price,
       imageUrl: this.imageUrl,
       linkToRegister: this.linkToRegister,
-      createdAt: this.createdAt,
+      createdAt: moment(this.createdAt).format('YYYY-MM-DD HH:mm:ss'),
     }
   }
 
