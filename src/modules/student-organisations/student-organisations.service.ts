@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentOrganisations } from './student-organisations.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UpdateStudentOrganisationDto } from './dto/update-student-organisation.dto';
 import { CreateStudentOrganisationDto } from './dto/create-student-organisation.dto';
 import { FollowOrganisationDto } from './dto/follow-student-organisation.dto';
 import { Users } from '../users/users.entity';
+import { GetByIdsDto } from './dto/get-by-ids.dto';
 
 @Injectable()
 export class StudentOrganisationsService {
@@ -27,6 +28,17 @@ export class StudentOrganisationsService {
   async findOne(id: number): Promise<StudentOrganisations | null> {
     return this.studentOrganisationsRepository.findOne({
       where: { id },
+      relations: {
+        events: true,
+      },
+    });
+  }
+
+  async findByIds(getByIdsDto: GetByIdsDto): Promise<StudentOrganisations[]> {
+    return this.studentOrganisationsRepository.find({
+      where: { 
+        id: In(getByIdsDto.ids),
+      },
       relations: {
         events: true,
       },

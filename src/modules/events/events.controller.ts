@@ -1,12 +1,13 @@
 import { Controller, Param, Get, NotFoundException, Post, Body, Put, Query, Delete } from '@nestjs/common';
-import { ApiCreatedResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { EventsService } from './events.service';
-import { EventDetailsAndCountDto, EventDetailsDto } from './dto/events-details.dto';
+import { EventDetailsDto } from './dto/events-details.dto';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/update-events.dto';
 import { ListAllEventsDto } from './dto/list-all-events.dto';
 import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
 import { LikeEventDto } from './dto/like-event.dto';
+import { GetByIdsDto } from './dto/get-by-ids.dto';
 
 
 @ApiTags('route to manage event entity')
@@ -15,14 +16,11 @@ export class EventsController {
   constructor(private readonly eventService: EventsService) {}
 
   @Get()
-  @ApiCreatedResponse({ type: EventDetailsAndCountDto })
-  async getAll(@Query() query: ListAllEventsDto): Promise<EventDetailsAndCountDto> {
-    const result = await this.eventService.findAndCount(query);
+  @ApiCreatedResponse({ type: EventDetailsDto, isArray: true })
+  async getAll(@Query() query: ListAllEventsDto): Promise<EventDetailsDto[]> {
+    const events = await this.eventService.find(query);
 
-    return {
-      events: result[0].map(event => event.details),
-      count: result[1],
-    };
+    return events.map(event => event.details);
   }
 
   @Get(':id')
@@ -36,17 +34,29 @@ export class EventsController {
   }
 
   @Get('/similar/:id')
-  @ApiCreatedResponse({ type: EventDetailsAndCountDto })
+  @ApiCreatedResponse({ type: EventDetailsDto, isArray: true })
   async getSimilar(
     @Param('id') id: number,
     @Query() query: ListSimilarEventsDto
-  ): Promise<EventDetailsAndCountDto> {
-    const result = await this.eventService.findSimilar(id, query);
+  ): Promise<EventDetailsDto[]> {
+    const events = await this.eventService.findSimilar(id, query);
 
-    return {
-      events: result[0].map(event => event.details),
-      count: result[1],
-    };
+    return events.map(event => event.details);
+  }
+
+  @Get('count')
+  @ApiCreatedResponse({type: Number})
+  async count(): Promise<number> {
+    const result = await this.eventService.count();
+
+    return result;
+  }
+
+  @Post('get-by-ids')
+  async findByIds(@Body() getByIdsDto: GetByIdsDto): Promise<EventDetailsDto[]> {
+    const events = await this.eventService.findByIds(getByIdsDto);
+
+    return events.map(event => event.details);
   }
 
   @Post('')

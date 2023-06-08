@@ -5,6 +5,7 @@ import { StudentOrganisationDetailsDto } from './dto/student-organisations-detai
 import { CreateStudentOrganisationDto } from './dto/create-student-organisation.dto';
 import { UpdateStudentOrganisationDto } from './dto/update-student-organisation.dto';
 import { FollowOrganisationDto } from './dto/follow-student-organisation.dto';
+import { GetByIdsDto } from './dto/get-by-ids.dto';
 
 
 @ApiTags('route to manage student organisation entity')
@@ -28,6 +29,13 @@ export class StudentOrganisationsController {
       throw new NotFoundException('StudentOrganisation not found');
     }
     return SO.details;
+  }
+
+  @Post('get-by-ids')
+  async findByIds(@Body() getByIdsDto: GetByIdsDto): Promise<StudentOrganisationDetailsDto[]> {
+    const SOs = await this.SOService.findByIds(getByIdsDto);
+
+    return SOs.map(SO => SO.details);
   }
 
   @Post('')

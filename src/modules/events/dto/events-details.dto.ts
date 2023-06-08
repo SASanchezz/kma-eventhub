@@ -40,11 +40,3 @@ export class EventDetailsDto {
   @ApiProperty()
   createdAt: string;
 }
-
-export class EventDetailsAndCountDto {
-  @ApiProperty({ type: [EventDetailsDto] })
-  events: EventDetailsDto[];
-
-  @ApiProperty()
-  count: number;
-}

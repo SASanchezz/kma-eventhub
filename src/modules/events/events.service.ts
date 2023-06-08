@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like } from "typeorm";
+import { In, Like } from "typeorm";
 import { Events } from './events.entity';
 import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
 import { Users } from '../users/users.entity';
@@ -10,6 +10,7 @@ import { CreateEventDto } from './dto/create-events.dto';
 import { GREATER, LOWER, ListAllEventsDto } from './dto/list-all-events.dto';
 import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
 import { LikeEventDto } from './dto/like-event.dto';
+import { GetByIdsDto } from './dto/get-by-ids.dto';
 
 @Injectable()
 export class EventsService {
@@ -22,7 +23,7 @@ export class EventsService {
     private usersRepository: Repository<Users>,
   ) {}
 
-  async findAndCount(listAllEventsDto: ListAllEventsDto): Promise<[Events[], number]> {
+  async find(listAllEventsDto: ListAllEventsDto): Promise<Events[]> {
     const { all, dateTime, dateTimeComparison, offset, limit } = listAllEventsDto;
     const where: any = {};
 
@@ -40,14 +41,14 @@ export class EventsService {
       }
     }
 
-    return this.eventsRepository.findAndCount({
+    return this.eventsRepository.find({
       where,
       skip: offset ?? 0,
       take: limit ?? 10,
     });
   }
 
-  async findSimilar(id: number, query: ListSimilarEventsDto): Promise<[Events[] | null, number]> {
+  async findSimilar(id: number, query: ListSimilarEventsDto): Promise<Events[]> {
     const event = await this.eventsRepository.findOneBy({ id });
 
     if (!event) {
@@ -68,11 +69,23 @@ export class EventsService {
       take: limit ?? 10,
     });
 
-    return [similarEvents, 200];
+    return similarEvents;
   }
 
   async findOne(id: number): Promise<Events | null> {
     return await this.eventsRepository.findOneBy({ id });
+  }
+
+  async count(): Promise<number> {
+    return this.eventsRepository.count();
+  }
+
+  async findByIds(getByIdsDto: GetByIdsDto): Promise<Events[]> {
+    return this.eventsRepository.find({
+      where: { 
+        id: In(getByIdsDto.ids),
+      },
+    });
   }
 
   async create(createEventDto: CreateEventDto): Promise<Events> {
