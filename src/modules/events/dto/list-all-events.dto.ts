@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDate, IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
 
 
@@ -7,30 +7,40 @@ export const GREATER: DateTimeComparisonType  = 'gt';
 export const LOWER: DateTimeComparisonType  = 'lt';
 
 export class ListAllEventsDto {
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Search by title, textPreview, tags',
+  })
   @IsOptional()
   @IsString()
   all?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Search by dateTime',
+  })
   @IsOptional()
   @IsString()
   @IsDate()
   dateTime?: string;
 
   // greater or lower than dateTime
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Way to compare dateTime',
+  })
   @IsOptional()
   @IsString()
   @IsIn([GREATER, LOWER])
   dateTimeComparison?: DateTimeComparisonType ;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Offset for pagination',
+  })
   @IsOptional()
   @IsNumber()
   offset?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Limit for pagination',
+  })
   @IsOptional()
   @IsNumber()
   limit?: number;

@@ -1,13 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional } from 'class-validator';
 
 export class ListSimilarEventsDto {
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Offset for pagination',
+  })
   @IsOptional()
   @IsNumber()
   offset?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Limit for pagination',
+  })
   @IsOptional()
   @IsNumber()
   limit?: number;

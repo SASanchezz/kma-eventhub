@@ -23,6 +23,12 @@ export class EventsController {
     return events.map(event => event.details);
   }
 
+  @Get('count')
+  @ApiCreatedResponse({type: Number})
+  async count(): Promise<number> {
+    return await this.eventService.count();
+  }
+
   @Get(':id')
   @ApiCreatedResponse({ type: EventDetailsDto })
   async getOne(@Param('id') id: number): Promise<EventDetailsDto> {
@@ -42,14 +48,6 @@ export class EventsController {
     const events = await this.eventService.findSimilar(id, query);
 
     return events.map(event => event.details);
-  }
-
-  @Get('count')
-  @ApiCreatedResponse({type: Number})
-  async count(): Promise<number> {
-    const result = await this.eventService.count();
-
-    return result;
   }
 
   @Post('get-by-ids')
