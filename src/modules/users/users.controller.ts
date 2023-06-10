@@ -1,5 +1,5 @@
 import { Controller, Param, Get, NotFoundException, Put, Body } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserDetailsDto } from './dto/user-details.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,8 +20,8 @@ export class UsersController {
 
   @Get(':email')
   @ApiCreatedResponse({ type: UserDetailsDto })
-  async getOne(@Param('email') email: string): Promise<UserDetailsDto> {
-    const user = await this.usersService.findOne(email);
+  async getOrCreate(@Param('email') email: string): Promise<UserDetailsDto> {
+    const user = await this.usersService.findByEmailOrCreate(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }

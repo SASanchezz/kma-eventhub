@@ -15,8 +15,14 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findOne(email: string): Promise<Users | null> {
-    return await this.usersRepository.findOneBy({ email });
+  async findByEmailOrCreate(email: string): Promise<Users | null> {
+    let user = await this.usersRepository.findOneBy({ email });
+    if (!user) {
+      user = this.usersRepository.create({ email });
+      await this.usersRepository.save(user);
+    } 
+
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> {
