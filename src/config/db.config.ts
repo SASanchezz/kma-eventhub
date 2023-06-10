@@ -3,6 +3,7 @@ import { StudentOrganisations } from "src/modules/student-organisations/student-
 import { Users } from "src/modules/users/users.entity";
 import { remoteDb } from "./remote-db.config";
 import { Events } from "src/modules/events/events.entity";
+import { SORequests } from "src/modules/so-requests/so-requests.entity";
 
 export const dbConfig: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -11,6 +12,6 @@ export const dbConfig: TypeOrmModuleOptions = {
   username: remoteDb.USERNAME, //process.env.NODE_ENV == 'prod' ? remoteDb.USERNAME : 'root',
   password: remoteDb.PASSWORD, //process.env.NODE_ENV == 'prod' ? remoteDb.PASSWORD : 'myrootpassword',
   database: remoteDb.DATABASE,
-  entities: [Users, StudentOrganisations, Events],
+  entities: [Users, StudentOrganisations, Events, SORequests],
   synchronize: true,
 }
