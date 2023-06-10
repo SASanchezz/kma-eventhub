@@ -12,6 +12,7 @@ import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
 import { LikeEventDto } from './dto/like-event.dto';
 import { GetByIdsDto } from './dto/get-by-ids.dto';
 
+
 @Injectable()
 export class EventsService {
   constructor(
