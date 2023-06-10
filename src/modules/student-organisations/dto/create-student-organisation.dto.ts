@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Transform, Type } from "class-transformer";
-import { IsString, MaxLength, IsEmail, IsOptional, IsNotEmpty, IsUrl, IsArray } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsString, MaxLength, IsNotEmpty, IsNumber, IsEmail } from "class-validator";
 
 
 export class CreateStudentOrganisationDto {
@@ -21,31 +21,13 @@ export class CreateStudentOrganisationDto {
     @IsString()
     @MaxLength(255)
     name: string;
-  
-    @ApiProperty({
-        type: String,
-        description: 'This is an optional property',
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(1023)
-    description?: string;
-  
-    @ApiProperty({
-        type: Array,
-        description: 'This is an optional property',
-    })
-    @IsOptional()
-    @IsString()
-    @Transform(({ value }) => value.join(' '))
-    socialMedia?: string;
 
     @ApiProperty({
-        type: String,
-        description: 'This is an optional property',
+        type: Number,
+        description: 'This is a required property',
     })
-    @IsOptional()
-    @IsUrl()
-    @MaxLength(255)
-    logoUrl?: string;
+    @IsNotEmpty()
+    @IsNumber()
+    @Transform(({ value }) => Number(value))
+    createdById: number;
 }

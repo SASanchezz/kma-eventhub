@@ -6,6 +6,7 @@ import { CreateStudentOrganisationDto } from './dto/create-student-organisation.
 import { UpdateStudentOrganisationDto } from './dto/update-student-organisation.dto';
 import { FollowOrganisationDto } from './dto/follow-student-organisation.dto';
 import { GetByIdsDto } from './dto/get-by-ids.dto';
+import { ListAllStudentOrganisationsDto } from './dto/list-all-student-organisations.dto';
 
 
 @ApiTags('route to manage student organisation entity')
@@ -15,8 +16,8 @@ export class StudentOrganisationsController {
 
   @Get()
   @ApiCreatedResponse({ type: StudentOrganisationDetailsDto, isArray: true })
-  async getAll(): Promise<StudentOrganisationDetailsDto[]> {
-    const SOs = await this.SOService.find();
+  async getAll(@Body() body: ListAllStudentOrganisationsDto): Promise<StudentOrganisationDetailsDto[]> {
+    const SOs = await this.SOService.find(body);
 
     return SOs.map(SO => SO.details);
   }
@@ -60,6 +61,21 @@ export class StudentOrganisationsController {
   @Post('unfollow')
   async unfollow(@Body() followOrganisationDto: FollowOrganisationDto): Promise<void> {
     await this.SOService.unfollow(followOrganisationDto);
+  }
+
+  @Post('status/to-review/:id')
+  async moveToReview(@Param('id') id: number): Promise<void> {
+    await this.SOService.moveToReview(id);
+  }
+
+  @Post('status/approve/:id')
+  async approve(@Param('id') id: number): Promise<void> {
+    await this.SOService.moveToApproved(id);
+  }
+
+  @Post('status/reject/:id')
+  async reject(@Param('id') id: number): Promise<void> {
+    await this.SOService.moveToRejected(id);
   }
   
 }
