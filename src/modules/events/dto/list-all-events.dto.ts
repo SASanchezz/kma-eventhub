@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 import { IsDate, IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
 
 
@@ -36,6 +37,7 @@ export class ListAllEventsDto {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   offset?: number;
 
   @ApiPropertyOptional({
@@ -43,5 +45,6 @@ export class ListAllEventsDto {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   limit?: number;
 }
