@@ -31,13 +31,13 @@ export class StudentOrganisations {
   @Column({ default: SORequestStatuses.SENT })
   status: string;
 
+  @Column()
+  createdById: number;
+
   @OneToMany(() => Events, event => event.organisation, {
     cascade: true,
   })
   events: Events[];
-
-  @Column()
-  createdById: number;
 
   @ManyToOne(() => Users, (user) => user.studentOrganisations)
   createdBy: Users;
@@ -84,6 +84,7 @@ export class StudentOrganisations {
       name: this.name,
       email: this.email,
       description: this.description,
+      status: this.status,
       followers: this.followers,
       socialMedia: this.socialMedia?.trim().split(' '),
       logoUrl: this.logoUrl,

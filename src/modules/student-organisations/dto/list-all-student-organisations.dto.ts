@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsArray, IsIn, IsOptional, IsString, Validate, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import { IsOptional, Validate, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 import { SORequestStatuses } from "src/modules/student-organisations/types/so-requests.statuses";
 
 @ValidatorConstraint({ name: 'isValidSORequestStatus', async: false })
@@ -22,8 +22,8 @@ export class IsValidSORequestStatusConstraint implements ValidatorConstraintInte
 
 export class ListAllStudentOrganisationsDto {
 	@ApiPropertyOptional({
-		type: String,
-		description: 'This is an optional property',
+		type: [String],
+		description: 'This is an optional property. Available values are: "Sent", "On review", "Rejected", "Approved"',
 	})
 	@IsOptional()
 	@Validate(IsValidSORequestStatusConstraint, {

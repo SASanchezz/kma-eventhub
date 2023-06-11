@@ -3,12 +3,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './users.entity';
 import { Repository } from 'typeorm';
+import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
+import { EmailStatusResponseDto, EmailStatuses } from './dto/email-status.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+    @InjectRepository(StudentOrganisations)
+    private studentOrganisationsRepository: Repository<StudentOrganisations>,
   ) {}
 
   async find(): Promise<Users[]> {
@@ -36,4 +40,16 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+  async getEmailStatus(email: string): Promise<EmailStatuses> {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (user) {
+      return EmailStatuses.USER;
+    }
+    const studentOrganisation = await this.studentOrganisationsRepository.findOneBy({ email });
+    if (studentOrganisation) {
+      return EmailStatuses.ORGANISATION;
+    }
+
+    return EmailStatuses.NONE;
+  }
 }
