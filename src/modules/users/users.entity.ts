@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 import { UserDetailsDto } from './dto/user-details.dto';
+import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Users {
@@ -32,6 +33,9 @@ export class Users {
 
   @Column({ default: null })
   refreshTokenIssuedAt: string;
+
+  @OneToMany(() => StudentOrganisations, studentOrganisation => studentOrganisation.createdBy)
+  studentOrganisations: StudentOrganisations[];
 
   @CreateDateColumn()
   createdAt: string;
