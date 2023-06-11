@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 import { IsNumber, IsOptional } from 'class-validator';
 
 export class ListSimilarEventsDto {
@@ -7,6 +8,7 @@ export class ListSimilarEventsDto {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   offset?: number;
 
   @ApiPropertyOptional({
@@ -14,5 +16,6 @@ export class ListSimilarEventsDto {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   limit?: number;
 }
