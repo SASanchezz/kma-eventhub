@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { EventDetailsDto } from "src/modules/events/dto/events-details.dto";
-import { UserDetailsDto } from "src/modules/users/dto/user-details.dto";
 
 export class StudentOrganisationDetailsDto {
   @ApiProperty()
@@ -14,6 +13,9 @@ export class StudentOrganisationDetailsDto {
 
   @ApiProperty()
   description: string;
+
+  @ApiProperty()
+  status: string;
 
   @ApiProperty()
   followers: number

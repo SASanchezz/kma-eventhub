@@ -3,6 +3,7 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserDetailsDto } from './dto/user-details.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { EmailStatusResponseDto, EmailStatuses } from './dto/email-status.dto';
 
 
 @ApiTags('route to manage user entity')
@@ -26,6 +27,12 @@ export class UsersController {
       throw new NotFoundException('User not found');
     }
     return user.details;
+  }
+
+  @Get('status/:email')
+  @ApiCreatedResponse({ type: EmailStatusResponseDto, description: 'Returns either: "user", "organisation", "none"' })
+  async getEmailStatus(@Param('email') email: string): Promise<EmailStatuses> {
+    return await this.usersService.getEmailStatus(email);
   }
 
   @Put(':id')
