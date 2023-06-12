@@ -55,7 +55,7 @@ export class Users {
   }
 
   removeLikedEvent(eventId: number): void {
-    const arr = this.likes.split(' ').map(Number);
+    const arr = this.likes?.split(' ').map(Number) ?? [];
     const index = arr.indexOf(eventId);
     if (index !== -1) {
       arr.splice(index, 1);
@@ -72,7 +72,7 @@ export class Users {
   }
 
   unFollowOrganisation(organisationId: number): void {
-    const arr = this.follows.split(' ').map(Number);
+    const arr = this.follows?.split(' ').map(Number) ?? [];
     const index = arr.indexOf(organisationId);
     if (index !== -1) {
       arr.splice(index, 1);
@@ -86,8 +86,8 @@ export class Users {
       email: this.email,
       name: this.name,
       surname: this.surname,
-      likes: this.likes.split(' ').filter(value => value.length > 0).map(Number),
-      follows: this.follows.split(' ').filter(value => value.length > 0).map(Number),
+      likes: this.likes?.split(' ').filter(value => value.length > 0).map(Number) ?? [],
+      follows: this.follows?.split(' ').filter(value => value.length > 0).map(Number) ?? [],
       imageUrl: this.imageUrl,
       createdAt: this.createdAt,
     }
