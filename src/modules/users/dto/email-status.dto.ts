@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export type EmailStatusType = {
+  status: EmailStatuses;
+}
+
 export enum EmailStatuses {
   USER = 'user',
   ORGANISATION = 'organisation',
@@ -8,5 +12,5 @@ export enum EmailStatuses {
 
 export class EmailStatusResponseDto {
   @ApiProperty({ enum: EmailStatuses })
-  type: EmailStatuses;
+  type: EmailStatusType;
 }
