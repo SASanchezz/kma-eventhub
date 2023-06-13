@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './users.entity';
 import { Repository } from 'typeorm';
 import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
-import { EmailStatusResponseDto, EmailStatuses } from './dto/email-status.dto';
+import { EmailStatusType, EmailStatuses } from './dto/email-status.dto';
 
 @Injectable()
 export class UsersService {
@@ -40,16 +40,22 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async getEmailStatus(email: string): Promise<EmailStatuses> {
+  async getEmailStatus(email: string): Promise<EmailStatusType> {
     const user = await this.usersRepository.findOneBy({ email });
     if (user) {
-      return EmailStatuses.USER;
+      return {
+        status: EmailStatuses.USER,
+      }
     }
     const studentOrganisation = await this.studentOrganisationsRepository.findOneBy({ email });
     if (studentOrganisation) {
-      return EmailStatuses.ORGANISATION;
+      return {
+        status: EmailStatuses.ORGANISATION,
+      }
     }
 
-    return EmailStatuses.NONE;
+    return {
+      status: EmailStatuses.NONE,
+    }
   }
 }
