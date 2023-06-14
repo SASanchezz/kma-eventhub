@@ -11,7 +11,7 @@ export class Events {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ length: 4096 })
   text: string;
 
   @Column({ default: null })
