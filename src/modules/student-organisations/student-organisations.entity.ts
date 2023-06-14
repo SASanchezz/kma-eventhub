@@ -16,7 +16,7 @@ export class StudentOrganisations {
   @Column({ unique: true })
   email: string;
 
-  @Column({ default: '' })
+  @Column({ default: '', length: 1023 })
   description: string;
 
   @Column({ default: null })
