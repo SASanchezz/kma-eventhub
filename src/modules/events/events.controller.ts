@@ -8,6 +8,7 @@ import { ListAllEventsDto } from './dto/list-all-events.dto';
 import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
 import { LikeEventDto } from './dto/like-event.dto';
 import { GetByIdsDto } from './dto/get-by-ids.dto';
+import { AllFiltersListDto } from './dto/all-filters-list.dto';
 
 
 @ApiTags('route to manage event entity')
@@ -21,6 +22,14 @@ export class EventsController {
     const events = await this.eventService.find(query);
 
     return events.map(event => event.details);
+  }
+
+  @Get('available-filters')
+  @ApiCreatedResponse({ type: AllFiltersListDto })
+  async getAllFilters(): Promise<AllFiltersListDto> {
+    const filters = await this.eventService.getAvaiableFilters();
+
+    return filters;
   }
 
   @Get('count')

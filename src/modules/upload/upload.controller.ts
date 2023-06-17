@@ -3,6 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
 import { UploadService } from './upload.service';
 import { createFileUrl } from 'src/utils/paths';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('uploads')
 export class UploadController {
@@ -16,6 +17,16 @@ export class UploadController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'binary',
+        },
+      },
+    },
+  })
   async uploadPhoto(@Req() req: Request, @UploadedFile() file: Express.Multer.File): Promise<string> {
     return createFileUrl(req, file.filename);
   }

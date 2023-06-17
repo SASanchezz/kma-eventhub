@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsString, MaxLength, IsEmail, IsOptional, IsNotEmpty, IsUrl, IsNumber, IsDateString } from "class-validator";
+import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString } from "class-validator";
 
 
 export class UpdateEventDto {
