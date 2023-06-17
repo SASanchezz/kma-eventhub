@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response, Request } from 'express';
 import { UploadService } from './upload.service';
 import { createFileUrl } from 'src/utils/paths';
 
