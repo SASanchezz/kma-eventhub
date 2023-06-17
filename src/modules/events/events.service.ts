@@ -1,16 +1,17 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Like } from "typeorm";
+import { Between, In, Like } from "typeorm";
 import { Events } from './events.entity';
 import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
 import { Users } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { UpdateEventDto } from './dto/update-events.dto';
 import { CreateEventDto } from './dto/create-events.dto';
-import { GREATER, LOWER, ListAllEventsDto } from './dto/list-all-events.dto';
+import { ListAllEventsDto } from './dto/list-all-events.dto';
 import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
 import { LikeEventDto } from './dto/like-event.dto';
 import { GetByIdsDto } from './dto/get-by-ids.dto';
+import { AllFiltersListDto } from './dto/all-filters-list.dto';
 
 @Injectable()
 export class EventsService {
@@ -24,21 +25,31 @@ export class EventsService {
   ) {}
 
   async find(listAllEventsDto: ListAllEventsDto): Promise<Events[]> {
-    const { all, dateTime, dateTimeComparison, offset, limit } = listAllEventsDto;
+    const { all, tag, studentOrganisationName, dateTimeFrom, dateTimeTo, location, offset, limit } = listAllEventsDto;
     const where: any = {};
 
     if (all) {
-      where.title = { $like: `%${all}%` };
-      where.textPreview = { $like: `%${all}%` };
-      where.tags = { $like: `%${all}%` };
+      const allLike = Like(`%${all}%`);
+      where.textPreview = allLike;
     }
 
-    if (dateTime && dateTimeComparison) {
-      if (dateTimeComparison === GREATER) {
-        where.dateTime = { $gt: dateTime };
-      } else if (dateTimeComparison === LOWER) {
-        where.dateTime = { $lt: dateTime };
+    if (tag) {
+      where.tags = Like(`%${tag}%`);
+    }
+
+    if (studentOrganisationName) {
+      const studentOrganisation = await this.SORepository.findOneBy({ name: studentOrganisationName });
+      if (studentOrganisation) {
+        where.organisationId = studentOrganisation.id;
       }
+    }
+
+    if (dateTimeFrom && dateTimeTo) {
+      where.dateTime = Between(dateTimeFrom, dateTimeTo);
+    }
+
+    if (location) {
+      where.location = Like(`%${location}%`);
     }
 
     return this.eventsRepository.find({
@@ -46,6 +57,29 @@ export class EventsService {
       skip: offset ?? 0,
       take: limit ?? 10,
     });
+  }
+
+  async getAvaiableFilters(): Promise<AllFiltersListDto> {
+    const tags = await this.eventsRepository.find({
+      select: ['tags'],
+    });
+    const organisations = await this.SORepository.find({
+      select: ['name'],
+    });
+    const locations = await this.eventsRepository.find({
+      select: ['location'],
+    });
+
+    const unqiueTags = new Set<string>();
+    tags.forEach(tag => {
+      tag.tags?.split(' ')?.forEach(t => unqiueTags.add(t));
+    });
+
+    return {
+      tags: Array.from(unqiueTags),
+      studentOrganisations: organisations.map(org => org.name),
+      locations: locations.map(loc => loc.location),
+    };
   }
 
   async findSimilar(id: number, query: ListSimilarEventsDto): Promise<Events[]> {

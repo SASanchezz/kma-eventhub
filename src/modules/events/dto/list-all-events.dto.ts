@@ -1,36 +1,52 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsDate, IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
-
-
-export type DateTimeComparisonType  = 'gt' | 'lt';
-export const GREATER: DateTimeComparisonType  = 'gt';
-export const LOWER: DateTimeComparisonType  = 'lt';
+import { Transform } from 'class-transformer';
+import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ListAllEventsDto {
   @ApiPropertyOptional({
-    description: 'Search by title, textPreview, tags',
+    description: 'Search by textPreview',
   })
   @IsOptional()
   @IsString()
   all?: string;
 
   @ApiPropertyOptional({
-    description: 'Search by dateTime',
+    description: 'Search by one tag',
   })
   @IsOptional()
   @IsString()
-  @IsDate()
-  dateTime?: string;
+  tag: string;
 
-  // greater or lower than dateTime
   @ApiPropertyOptional({
-    description: 'Way to compare dateTime',
+    description: 'Search SO id',
   })
   @IsOptional()
   @IsString()
-  @IsIn([GREATER, LOWER])
-  dateTimeComparison?: DateTimeComparisonType ;
+
+  studentOrganisationName?: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by dateTime from some moment',
+  })
+  @IsOptional()
+  @IsString()
+  @IsDateString()
+  dateTimeFrom?: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by dateTime to some moment',
+  })
+  @IsOptional()
+  @IsString()
+  @IsDateString()
+  dateTimeTo?: string;
+
+  @ApiPropertyOptional({
+    description: 'Search SO id',
+  })
+  @IsOptional()
+  @IsString()
+  location?: string;
 
   @ApiPropertyOptional({
     description: 'Offset for pagination',
