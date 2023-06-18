@@ -40,6 +40,10 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+  async delete(id: number): Promise<void> {
+    await this.usersRepository.delete({ id });
+  }
+
   async getEmailStatus(email: string): Promise<EmailStatusType> {
     const user = await this.usersRepository.findOneBy({ email });
     if (user) {
