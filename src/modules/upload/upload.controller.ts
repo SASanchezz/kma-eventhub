@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
 import { UploadService } from './upload.service';
@@ -28,6 +28,10 @@ export class UploadController {
     },
   })
   async uploadPhoto(@Req() req: Request, @UploadedFile() file: Express.Multer.File): Promise<string> {
+    if (!file) {
+      throw new BadRequestException('File field is empty')
+    }
+
     return createFileUrl(req, file.filename);
   }
 }
