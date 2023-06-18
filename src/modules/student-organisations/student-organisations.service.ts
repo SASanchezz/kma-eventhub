@@ -64,9 +64,13 @@ export class StudentOrganisationsService {
     if (!user) {
       throw new BadRequestException('User with this id does not exist');
     }
-    const emailTaken = await this.studentOrganisationsRepository.findOneBy({ email: createStudentOrganisationDto.email });
-    if (emailTaken) {
+    const emailTakenByOrganisation = await this.studentOrganisationsRepository.findOneBy({ email: createStudentOrganisationDto.email });
+    if (emailTakenByOrganisation) {
       throw new BadRequestException('Student organisation with this email already exists');
+    }
+    const emailTakenByUser = await this.usersRepository.findOneBy({ email: createStudentOrganisationDto.email });
+    if (emailTakenByUser) {
+      throw new BadRequestException('User with this email already exists');
     }
     const nameTaken = await this.studentOrganisationsRepository.findOneBy({ name: createStudentOrganisationDto.name });
     if (nameTaken) {
