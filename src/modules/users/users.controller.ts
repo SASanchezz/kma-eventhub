@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { UserDetailsDto } from './dto/user-details.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EmailStatusResponseDto, EmailStatusType } from './dto/email-status.dto';
+import { StudentOrganisationDetailsDto } from '../student-organisations/dto/student-organisations-details.dto';
 
 
 @ApiTags('route to manage user entity')
@@ -20,13 +21,11 @@ export class UsersController {
   }
 
   @Get(':email')
-  @ApiCreatedResponse({ type: UserDetailsDto })
-  async getOrCreate(@Param('email') email: string): Promise<UserDetailsDto> {
-    const user = await this.usersService.findByEmailOrCreate(email);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user.details;
+  @ApiCreatedResponse({ type: UserDetailsDto, description: 'Returns either: "UserDetailsDto", "StudentOrganisationDetailsDto"' })
+  async getOrCreate(@Param('email') email: string): Promise<UserDetailsDto | StudentOrganisationDetailsDto> {
+    const entity = await this.usersService.findByEmailOrCreate(email);
+
+    return entity.details;
   }
 
   @Get('status/:email')
