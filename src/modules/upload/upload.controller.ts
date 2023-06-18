@@ -3,7 +3,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
 import { UploadService } from './upload.service';
 import { createFileUrl } from 'src/utils/paths';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
+import { UploadFileDto } from './dto/upload-file.dto';
 
 @Controller('uploads')
 export class UploadController {
@@ -27,11 +28,14 @@ export class UploadController {
       },
     },
   })
-  async uploadPhoto(@Req() req: Request, @UploadedFile() file: Express.Multer.File): Promise<string> {
+  @ApiCreatedResponse({ type: UploadFileDto })
+  async uploadPhoto(@Req() req: Request, @UploadedFile() file: Express.Multer.File): Promise<UploadFileDto> {
     if (!file) {
       throw new BadRequestException('File field is empty')
     }
 
-    return createFileUrl(req, file.filename);
+    return {
+      url: createFileUrl(req, file.filename)
+    }
   }
 }
