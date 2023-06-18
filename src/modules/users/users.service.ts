@@ -19,8 +19,13 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findByEmailOrCreate(email: string): Promise<Users | null> {
+  async findByEmailOrCreate(email: string): Promise<Users | StudentOrganisations> {
     let user = await this.usersRepository.findOneBy({ email });
+    const studentOrganisation = await this.studentOrganisationsRepository.findOneBy({ email });
+    if (studentOrganisation) {
+      return studentOrganisation;
+    }
+
     if (!user) {
       user = this.usersRepository.create({ email });
       await this.usersRepository.save(user);
