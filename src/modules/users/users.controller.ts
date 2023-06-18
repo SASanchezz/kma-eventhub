@@ -1,4 +1,4 @@
-import { Controller, Param, Get, NotFoundException, Put, Body } from '@nestjs/common';
+import { Controller, Param, Get, NotFoundException, Put, Body, Delete } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserDetailsDto } from './dto/user-details.dto';
@@ -40,5 +40,10 @@ export class UsersController {
     const user = await this.usersService.update(id, updateUserDto);
 
     return user.details
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<void> {
+    await this.usersService.delete(id);
   }
 }
