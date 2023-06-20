@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { EventDetailsDto } from './dto/events-details.dto';
 import * as moment from 'moment';
 import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
+import { EventFormats } from './dto/event.formats';
 
 @Entity({ engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Events {
@@ -10,6 +11,9 @@ export class Events {
 
   @Column()
   title: string;
+
+  @Column({ default: EventFormats.ONLINE })
+  format: string;
 
   @Column({ length: 4096 })
   text: string;
@@ -32,7 +36,7 @@ export class Events {
   @Column({ default: null })
   location?: string;
 
-  @Column({ default: null })
+  @Column({ default: 0 })
   price?: number;
 
   @Column({ default: null })
@@ -57,6 +61,7 @@ export class Events {
     return {
       id: this.id,
       title: this.title,
+      format: this.format, 
       text: this.text,
       textPreview: this.textPreview,
       dateTime: moment(this.dateTime).format('YYYY-MM-DD HH:mm:ss'),

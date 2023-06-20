@@ -1,62 +1,69 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString } from "class-validator";
+import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString, IsIn } from "class-validator";
+import { EventFormats } from "./event.formats";
 
 
 export class UpdateEventDto {
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
+    @ApiPropertyOptional({ type: String })
+    @IsOptional()
     @IsString()
     @MaxLength(255)
     title: string;
+
+    @ApiPropertyOptional({ type: String, enum: EventFormats })
+    @IsOptional()
+    @IsString()
+    @IsIn(Object.values(EventFormats))
+    format: string;
     
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
+    @ApiPropertyOptional({ type: String })
+    @IsOptional()
     @IsString()
     @MaxLength(4096)
     text: string;
   
-    @ApiProperty({ type: String })
+    @ApiPropertyOptional({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
     textPreview?: string;
   
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
+    @ApiPropertyOptional({ type: String })
+    @IsOptional()
     @IsDateString()
     dateTime: string;
 
-    @ApiProperty({ type: Array })
+    @ApiPropertyOptional({ type: Array })
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
     tags?: string;
 
-    @ApiProperty({ type: Array })
+    @ApiPropertyOptional({ type: Array })
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value.join(' '))
     partnerIds?: string;
 
-    @ApiProperty({ type: String })
+    @ApiPropertyOptional({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
     location?: string;
 
-    @ApiProperty({ type: Number })
+    @ApiPropertyOptional({ type: Number })
     @IsOptional()
     @IsString()
     price?: number;
 
-    @ApiProperty({ type: String })
+    @ApiPropertyOptional({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)
     imageUrl?: string;
 
-    @ApiProperty({ type: String })
+    @ApiPropertyOptional({ type: String })
     @IsOptional()
     @IsString()
     @MaxLength(255)

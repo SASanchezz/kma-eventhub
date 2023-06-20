@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, In, Like } from "typeorm";
+import { Between, In, IsNull, Like, MoreThan } from "typeorm";
 import { Events } from './events.entity';
 import { StudentOrganisations } from '../student-organisations/student-organisations.entity';
 import { Users } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { UpdateEventDto } from './dto/update-events.dto';
 import { CreateEventDto } from './dto/create-events.dto';
-import { ListAllEventsDto } from './dto/list-all-events.dto';
+import { BoolValues, ListAllEventsDto } from './dto/list-all-events.dto';
 import { ListSimilarEventsDto } from './dto/list-similar-events.dto';
 import { LikeEventDto } from './dto/like-event.dto';
 import { GetByIdsDto } from './dto/get-by-ids.dto';
@@ -25,7 +25,7 @@ export class EventsService {
   ) {}
 
   async find(listAllEventsDto: ListAllEventsDto): Promise<Events[]> {
-    const { all, tag, studentOrganisationName, dateTimeFrom, dateTimeTo, location, offset, limit } = listAllEventsDto;
+    const { all, tags, isFree, format, studentOrganisationNames, dateTimeFrom, dateTimeTo, date, time, locations, offset, limit } = listAllEventsDto;
     const where: any = {};
 
     if (all) {
@@ -33,30 +33,53 @@ export class EventsService {
       where.textPreview = allLike;
     }
 
-    if (tag) {
-      where.tags = Like(`%${tag}%`);
+    if (studentOrganisationNames) {
+      const studentOrganisation = await this.SORepository.findBy({ name: In(studentOrganisationNames) });
+      const organisationIds = studentOrganisation.map(org => org.id);
+      if (studentOrganisation) {
+        where.organisationId = In(organisationIds);
+      }
     }
 
-    if (studentOrganisationName) {
-      const studentOrganisation = await this.SORepository.findOneBy({ name: studentOrganisationName });
-      if (studentOrganisation) {
-        where.organisationId = studentOrganisation.id;
-      }
+    if (isFree) {
+      where.price = isFree == BoolValues.TRUE ? 0 : MoreThan(0);
+    }
+
+    if (format) {
+      where.format = format;
     }
 
     if (dateTimeFrom && dateTimeTo) {
       where.dateTime = Between(dateTimeFrom, dateTimeTo);
     }
 
-    if (location) {
-      where.location = Like(`%${location}%`);
+    if (date) {
+      where.dateTime = Like(`%${date}%`);
     }
 
-    return this.eventsRepository.find({
+    if (time) {
+      where.dateTime = Like(`%${time}%`);
+    }
+
+    if (locations) {
+      where.location = In(locations);
+    }
+
+    const events = await this.eventsRepository.find({
       where,
       skip: offset ?? 0,
       take: limit ?? 10,
     });
+
+    let filteredEvents = events;
+    if (tags) {
+      filteredEvents = events.filter(event => {
+        const eventTags = event.tags?.split(' ');
+        return eventTags?.some(tag => tags.includes(tag));
+      });
+    }
+
+    return filteredEvents;
   }
 
   async getAvaiableFilters(): Promise<AllFiltersListDto> {
@@ -74,11 +97,20 @@ export class EventsService {
     tags.forEach(tag => {
       tag.tags?.split(' ')?.forEach(t => unqiueTags.add(t));
     });
+    const uniqueOrganisations = new Set<string>();
+    organisations.forEach(org => {
+      uniqueOrganisations.add(org.name);
+    });
+    const uniqueLocations = new Set<string>();
+    locations.forEach(loc => {
+      uniqueLocations.add(loc.location);
+    });
+
 
     return {
       tags: Array.from(unqiueTags),
-      studentOrganisations: organisations.map(org => org.name),
-      locations: locations.map(loc => loc.location),
+      studentOrganisations: Array.from(uniqueOrganisations),
+      locations: Array.from(uniqueLocations),
     };
   }
 
@@ -102,8 +134,9 @@ export class EventsService {
       skip: offset ?? 0,
       take: limit ?? 10,
     });
-
-    return similarEvents;
+    similarEvents.unshift(event);
+    
+    return similarEvents; 
   }
 
   async findOne(id: number): Promise<Events | null> {
