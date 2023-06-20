@@ -8,6 +8,9 @@ export class EventDetailsDto {
   title: string;
 
   @ApiProperty()
+  format: string;
+
+  @ApiProperty()
   text: string;
 
   @ApiProperty()

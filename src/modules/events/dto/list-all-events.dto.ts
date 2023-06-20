@@ -1,6 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDateString, IsIn, IsNumber, IsOptional, IsString, Matches } from 'class-validator';
+import { EventFormats } from './event.formats';
+
+const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/; // HH:mm
+export const BoolValues = {
+  TRUE: 'true',
+  FALSE: 'false',
+}
 
 export class ListAllEventsDto {
   @ApiPropertyOptional({
@@ -11,19 +18,36 @@ export class ListAllEventsDto {
   all?: string;
 
   @ApiPropertyOptional({
-    description: 'Search by one tag',
+    description: 'Search by tags',
   })
   @IsOptional()
-  @IsString()
-  tag: string;
+  @IsArray()
+  tags: string[];
 
   @ApiPropertyOptional({
-    description: 'Search SO id',
+    description: 'Search by priced or free event',
+    enum: BoolValues,
   })
   @IsOptional()
   @IsString()
+  @IsIn(Object.values(BoolValues))
+  isFree: string;
 
-  studentOrganisationName?: string;
+  @ApiPropertyOptional({
+    description: 'Search by priced or free event',
+    enum: EventFormats,
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn(Object.values(EventFormats))
+  format: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by so names',
+  })
+  @IsOptional()
+  @IsArray()
+  studentOrganisationNames?: string[];
 
   @ApiPropertyOptional({
     description: 'Search by dateTime from some moment',
@@ -42,11 +66,27 @@ export class ListAllEventsDto {
   dateTimeTo?: string;
 
   @ApiPropertyOptional({
-    description: 'Search SO id',
+    description: 'Search by date',
   })
   @IsOptional()
   @IsString()
-  location?: string;
+  @IsDateString()
+  date?: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by time',
+  })
+  @IsOptional()
+  @IsString()
+  @Matches(timeRegex)
+  time?: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by locations',
+  })
+  @IsOptional()
+  @IsArray()
+  locations?: string[];
 
   @ApiPropertyOptional({
     description: 'Offset for pagination',

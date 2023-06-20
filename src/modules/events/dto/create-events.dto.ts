@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString, IsNumber, IsNumberString } from "class-validator";
+import { IsString, MaxLength, IsOptional, IsNotEmpty, IsDateString, IsNumber, IsIn } from "class-validator";
+import { EventFormats } from "./event.formats";
 
 
 export class CreateEventDto {
@@ -12,6 +13,16 @@ export class CreateEventDto {
     @IsString()
     @MaxLength(255)
     title: string;
+
+    @ApiProperty({
+        type: String,
+        enum: EventFormats,
+        description: 'This is an optional property',
+    })
+    @IsOptional()
+    @IsString()
+    @IsIn(Object.values(EventFormats))
+    format: string;
     
     @ApiProperty({
         type: String,
