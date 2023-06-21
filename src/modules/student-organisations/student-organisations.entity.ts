@@ -86,7 +86,7 @@ export class StudentOrganisations {
       description: this.description,
       status: this.status,
       followers: this.followers,
-      socialMedia: this.socialMedia?.trim().split(' ') ?? [],
+      socialMedia: this.socialMedia ? this.socialMedia.trim().split(' ') : [],
       logoUrl: this.logoUrl,
       createdAt: moment(this.createdAt).format('YYYY-MM-DD HH:mm:ss'),
       upcomingEvents: this.events
