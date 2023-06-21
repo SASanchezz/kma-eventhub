@@ -65,7 +65,7 @@ export class Events {
       text: this.text,
       textPreview: this.textPreview,
       dateTime: moment(this.dateTime).format('YYYY-MM-DD HH:mm:ss'),
-      tags: this.tags?.split(' ') ?? [],
+      tags: this.tags ? this.tags.split(' ') : [],
       organisationId: this.organisationId,
       partnerIds: this.partnerIds?.split(' ').map(Number) ?? [],
       location: this.location,
