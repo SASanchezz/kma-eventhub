@@ -134,9 +134,9 @@ export class EventsService {
       skip: offset ?? 0,
       take: limit ?? 10,
     });
-    similarEvents.unshift(event);
+
     
-    return similarEvents; 
+    return similarEvents.filter(similarEvent => similarEvent.id !== id);
   }
 
   async findOne(id: number): Promise<Events | null> {

@@ -7,5 +7,5 @@ export const getUploadsPath = (filename = ''): string => {
 };
 
 export const createFileUrl = (req: any, fileName: string): string => {
-  return `https://${req.headers.host}/uploads/${fileName}`;
+  return `https://${req.headers.host}/api/v1/uploads/${fileName}`;
 };
