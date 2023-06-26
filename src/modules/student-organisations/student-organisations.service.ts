@@ -103,7 +103,7 @@ export class StudentOrganisationsService {
     
     Object.assign(SO, updateSODto);
 
-    return this.studentOrganisationsRepository.save(SO);
+    return await this.studentOrganisationsRepository.save(SO);
   }
 
   async moveToReview(id: number): Promise<StudentOrganisations> {
@@ -113,7 +113,7 @@ export class StudentOrganisationsService {
     }
     SO.status = SORequestStatuses.ON_REVIEW;
 
-    return this.studentOrganisationsRepository.save(SO);
+    return await this.studentOrganisationsRepository.save(SO);
   }
 
   async moveToRejected(id: number): Promise<StudentOrganisations> {
@@ -123,7 +123,7 @@ export class StudentOrganisationsService {
     }
     SO.status = SORequestStatuses.REJECTED;
 
-    return this.studentOrganisationsRepository.save(SO);
+    return await this.studentOrganisationsRepository.save(SO);
   }
 
   async moveToApproved(id: number): Promise<StudentOrganisations> {

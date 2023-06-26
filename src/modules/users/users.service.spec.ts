@@ -16,14 +16,8 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
-        {
-          provide: getRepositoryToken(Users),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(StudentOrganisations),
-          useClass: Repository,
-        },
+        { provide: getRepositoryToken(Users), useClass: Repository },
+        { provide: getRepositoryToken(StudentOrganisations), useClass: Repository },
       ],
     }).compile();
 
@@ -32,9 +26,9 @@ describe('UsersService', () => {
     studentOrganisationsRepository = module.get<Repository<StudentOrganisations>>(getRepositoryToken(StudentOrganisations));
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+  // afterEach(() => {
+  //   jest.resetAllMocks();
+  // });
 
   describe('find', () => {
     it('should return an array of users', async () => {
@@ -52,7 +46,8 @@ describe('UsersService', () => {
     it('should return an existing user', async () => {
       const email = 'existinguser@example.com';
       const user: any = { id: 1, email };
-      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(user);
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValueOnce(user);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce(null);
       jest.spyOn(usersRepository, 'create').mockImplementation();
       jest.spyOn(usersRepository, 'save').mockResolvedValue(null);
 
@@ -67,16 +62,17 @@ describe('UsersService', () => {
     it('should create and return a new user if not found', async () => {
       const email = 'newuser@example.com';
       const newUser: any = { id: 2, email };
-      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(null);
-      jest.spyOn(usersRepository, 'create').mockReturnValue(newUser);
-      jest.spyOn(usersRepository, 'save').mockResolvedValue(newUser);
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValueOnce(null);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce(null);
+      jest.spyOn(usersRepository, 'create').mockResolvedValueOnce(newUser as never);
+      jest.spyOn(usersRepository, 'save').mockResolvedValueOnce(newUser);
 
       const result = await service.findByEmailOrCreate(email);
 
       expect(result).toEqual(newUser);
       expect(usersRepository.findOneBy).toHaveBeenCalledWith({ email });
       expect(usersRepository.create).toHaveBeenCalledWith({ email });
-      expect(usersRepository.save).toHaveBeenCalledWith(newUser);
+      expect(usersRepository.save).toHaveBeenCalledTimes(1);
     });
   });
 

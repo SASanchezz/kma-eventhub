@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StudentOrganisationsService } from './student-organisations.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { StudentOrganisations } from './student-organisations.entity';
 import { Users } from '../users/users.entity';
@@ -39,7 +39,7 @@ describe('StudentOrganisationsService', () => {
   describe('find', () => {
     it('should find student organisations with specified statuses', async () => {
       const listAllDto = { statuses: [SORequestStatuses.APPROVED, SORequestStatuses.REJECTED] };
-      const expectedResult = [{ id: 1, name: 'StudentOrg1' }, { id: 2, name: 'StudentOrg2' }];
+      const expectedResult: any = [{ id: 1, name: 'StudentOrg1' }, { id: 2, name: 'StudentOrg2' }];
       jest.spyOn(studentOrganisationsRepository, 'find').mockResolvedValue(expectedResult);
 
       const result = await service.find(listAllDto);
@@ -54,7 +54,7 @@ describe('StudentOrganisationsService', () => {
 
   describe('findOne', () => {
     it('should find a student organisation by ID', async () => {
-      const expectedResult = { id: 1, name: 'StudentOrg1' };
+      const expectedResult: any = { id: 1, name: 'StudentOrg1' };
       jest.spyOn(studentOrganisationsRepository, 'findOne').mockResolvedValue(expectedResult);
 
       const result = await service.findOne(1);
@@ -82,7 +82,7 @@ describe('StudentOrganisationsService', () => {
   describe('findByIds', () => {
     it('should find student organisations by IDs', async () => {
       const getByIdsDto: GetByIdsDto = { ids: [1, 2] };
-      const expectedResult = [{ id: 1, name: 'StudentOrg1' }, { id: 2, name: 'StudentOrg2' }];
+      const expectedResult: any = [{ id: 1, name: 'StudentOrg1' }, { id: 2, name: 'StudentOrg2' }];
       jest.spyOn(studentOrganisationsRepository, 'find').mockResolvedValue(expectedResult);
 
       const result = await service.findByIds(getByIdsDto);
@@ -103,61 +103,63 @@ describe('StudentOrganisationsService', () => {
     };
 
     it('should create a new student organisation', async () => {
-      const user = { id: 1, studentOrganisations: [] };
-      const newSO = { id: 1, name: 'New StudentOrg' };
+      const user: any = { id: 1, studentOrganisations: [] };
+      const newSO: any = { id: 1, name: 'New StudentOrg' };
 
-      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(user);
-      jest.spyOn(studentOrganisationsRepository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValueOnce(user);
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValueOnce(null);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce(null);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce(null);
       jest.spyOn(studentOrganisationsRepository, 'create').mockReturnValue(newSO);
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(newSO);
 
       const result = await service.create(createDto);
 
       expect(result).toEqual(newSO);
-      expect(usersRepository.findOne).toBeCalledWith({ id: createDto.createdById });
-      expect(studentOrganisationsRepository.findOne).toBeCalledWith({ email: createDto.email });
+      expect(usersRepository.findOneBy).toBeCalledWith({ id: createDto.createdById });
+      expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ email: createDto.email });
       expect(studentOrganisationsRepository.create).toBeCalledWith(createDto);
       expect(user.studentOrganisations).toContain(newSO);
       expect(studentOrganisationsRepository.save).toBeCalledWith(newSO);
     });
 
     it('should throw BadRequestException if user with the specified ID does not exist', async () => {
-      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(null);
 
       await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      expect(usersRepository.findOne).toBeCalledWith({ id: createDto.createdById });
+      expect(usersRepository.findOneBy).toBeCalledWith({ id: createDto.createdById });
     });
 
     it('should throw BadRequestException if a student organisation with the specified email already exists', async () => {
-      jest.spyOn(usersRepository, 'findOne').mockResolvedValue({});
-      jest.spyOn(studentOrganisationsRepository, 'findOne').mockResolvedValue({});
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({} as any);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({} as any);
 
       await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      expect(usersRepository.findOne).toBeCalledWith({ id: createDto.createdById });
-      expect(studentOrganisationsRepository.findOne).toBeCalledWith({ email: createDto.email });
+      expect(usersRepository.findOneBy).toBeCalledWith({ id: createDto.createdById });
+      expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ email: createDto.email });
     });
 
     it('should throw BadRequestException if a user with the specified email already exists', async () => {
-      jest.spyOn(usersRepository, 'findOne').mockResolvedValue({});
-      jest.spyOn(studentOrganisationsRepository, 'findOne').mockResolvedValue(null);
-      jest.spyOn(usersRepository, 'findOne').mockResolvedValue({});
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({} as any);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(null);
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({} as any);
 
       await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      expect(usersRepository.findOne).toBeCalledWith({ id: createDto.createdById });
-      expect(studentOrganisationsRepository.findOne).toBeCalledWith({ email: createDto.email });
-      expect(usersRepository.findOne).toBeCalledWith({ email: createDto.email });
+      expect(usersRepository.findOneBy).toBeCalledWith({ id: createDto.createdById });
+      expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ email: createDto.email });
+      expect(usersRepository.findOneBy).toBeCalledWith({ email: createDto.email });
     });
 
     it('should throw BadRequestException if a student organisation with the specified name already exists', async () => {
-      jest.spyOn(usersRepository, 'findOne').mockResolvedValue({});
-      jest.spyOn(studentOrganisationsRepository, 'findOne').mockResolvedValue(null);
-      jest.spyOn(studentOrganisationsRepository, 'findOne').mockResolvedValue({});
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({} as any);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(null);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({} as any);
 
       await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      expect(usersRepository.findOne).toBeCalledWith({ id: createDto.createdById });
-      expect(studentOrganisationsRepository.findOne).toBeCalledWith({ email: createDto.email });
-      expect(usersRepository.findOne).toBeCalledWith({ email: createDto.email });
-      expect(studentOrganisationsRepository.findOne).toBeCalledWith({ name: createDto.name });
+      expect(usersRepository.findOneBy).toBeCalledWith({ id: createDto.createdById });
+      expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ email: createDto.email });
+      expect(usersRepository.findOneBy).toBeCalledTimes(1);
+      expect(studentOrganisationsRepository.findOneBy).toBeCalledTimes(1);
     });
   });
 
@@ -165,10 +167,10 @@ describe('StudentOrganisationsService', () => {
     const updateDto: UpdateStudentOrganisationDto = { email: 'updated@example.com' };
 
     it('should update a student organisation by ID', async () => {
-      const existingSO = { id: 1, name: 'StudentOrg1', email: 'test@example.com' };
+      const existingSO: any = { id: 1, name: 'StudentOrg1', email: 'test@example.com' };
 
-      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(existingSO);
-      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(null);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce(existingSO);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce(null);
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(existingSO);
 
       const result = await service.update(1, updateDto);
@@ -188,19 +190,21 @@ describe('StudentOrganisationsService', () => {
     });
 
     it('should throw BadRequestException if the updated email is already taken by another student organisation', async () => {
-      const existingSO = { id: 1, name: 'StudentOrg1', email: 'test@example.com' };
-      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(existingSO);
-      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({ email: updateDto.email });
+      const existingSO: any = { id: 1, name: 'StudentOrg1', email: 'test@example.com' };
+      const newSo: any = { email: 'test@example.com' };
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce({ email: 'someEmail'} as any);
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValueOnce({ email: existingSO.email } as any);
+      jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue({} as any);
 
-      await expect(service.update(1, updateDto)).rejects.toThrow(BadRequestException);
+      await expect(service.update(1, newSo)).rejects.toThrow(BadRequestException);
       expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ id: 1 });
-      expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ email: updateDto.email });
+      expect(studentOrganisationsRepository.findOneBy).toBeCalledTimes(2);
     });
   });
 
   describe('moveToReview', () => {
     it('should move a student organisation to review status', async () => {
-      const existingSO = { id: 1, name: 'StudentOrg1', status: SORequestStatuses.APPROVED };
+      const existingSO: any = { id: 1, name: 'StudentOrg1', status: SORequestStatuses.APPROVED };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(existingSO);
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(existingSO);
@@ -223,7 +227,7 @@ describe('StudentOrganisationsService', () => {
 
   describe('moveToRejected', () => {
     it('should move a student organisation to rejected status', async () => {
-      const existingSO = { id: 1, name: 'StudentOrg1', status: SORequestStatuses.APPROVED };
+      const existingSO: any = { id: 1, name: 'StudentOrg1', status: SORequestStatuses.APPROVED };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(existingSO);
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(existingSO);
@@ -246,7 +250,7 @@ describe('StudentOrganisationsService', () => {
 
   describe('moveToApproved', () => {
     it('should move a student organisation to approved status', async () => {
-      const existingSO = { id: 1, name: 'StudentOrg1', status: SORequestStatuses.REJECTED };
+      const existingSO: any = { id: 1, name: 'StudentOrg1', status: SORequestStatuses.REJECTED };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(existingSO);
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(existingSO);
@@ -270,13 +274,14 @@ describe('StudentOrganisationsService', () => {
   describe('follow', () => {
     it('should follow a student organisation', async () => {
       const followDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
-      const organisation = { id: 1, name: 'StudentOrg1' };
-      const user = { id: 1, isFollowed: jest.fn(), followOrganisation: jest.fn() };
+      const organisation: any = { id: 1, name: 'StudentOrg1', incrementFollowers: jest.fn() };
+      const user: any = { id: 1, isFollowed: jest.fn(), followOrganisation: jest.fn() };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(organisation);
       jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(user);
       jest.spyOn(user, 'isFollowed').mockReturnValue(false);
       jest.spyOn(user, 'followOrganisation');
+      jest.spyOn(organisation, 'incrementFollowers');
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(organisation);
       jest.spyOn(usersRepository, 'save').mockResolvedValue(user);
 
@@ -286,6 +291,7 @@ describe('StudentOrganisationsService', () => {
       expect(usersRepository.findOneBy).toBeCalledWith({ id: followDto.userId });
       expect(user.isFollowed).toBeCalledWith(followDto.organisationId);
       expect(user.followOrganisation).toBeCalledWith(followDto.organisationId);
+      expect(organisation.incrementFollowers).toBeCalled();
       expect(studentOrganisationsRepository.save).toBeCalledWith(organisation);
       expect(usersRepository.save).toBeCalledWith(user);
     });
@@ -294,17 +300,17 @@ describe('StudentOrganisationsService', () => {
       const followDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(null);
-      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({});
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({} as any);
 
       await expect(service.follow(followDto)).rejects.toThrow(NotFoundException);
       expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ id: followDto.organisationId });
-      expect(usersRepository.findOneBy).toBeCalledWith({ id: followDto.userId });
+      expect(usersRepository.findOneBy).toBeCalledTimes(0);
     });
 
     it('should throw NotFoundException if user is not found', async () => {
       const followDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
 
-      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({});
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({} as any);
       jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(null);
 
       await expect(service.follow(followDto)).rejects.toThrow(NotFoundException);
@@ -314,8 +320,8 @@ describe('StudentOrganisationsService', () => {
 
     it('should throw BadRequestException if user already follows the organisation', async () => {
       const followDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
-      const organisation = { id: 1, name: 'StudentOrg1' };
-      const user = { id: 1, isFollowed: jest.fn() };
+      const organisation: any = { id: 1, name: 'StudentOrg1' };
+      const user: any = { id: 1, isFollowed: jest.fn() };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(organisation);
       jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(user);
@@ -331,12 +337,13 @@ describe('StudentOrganisationsService', () => {
   describe('unfollow', () => {
     it('should unfollow a student organisation', async () => {
       const unfollowDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
-      const organisation = { id: 1, name: 'StudentOrg1' };
-      const user = { id: 1, unFollowOrganisation: jest.fn() };
+      const organisation: any = { id: 1, name: 'StudentOrg1', decrementFollowers: jest.fn() };
+      const user: any = { id: 1, unFollowOrganisation: jest.fn() };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(organisation);
       jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(user);
       jest.spyOn(user, 'unFollowOrganisation');
+      jest.spyOn(organisation, 'decrementFollowers');
       jest.spyOn(studentOrganisationsRepository, 'save').mockResolvedValue(organisation);
       jest.spyOn(usersRepository, 'save').mockResolvedValue(user);
 
@@ -345,6 +352,7 @@ describe('StudentOrganisationsService', () => {
       expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ id: unfollowDto.organisationId });
       expect(usersRepository.findOneBy).toBeCalledWith({ id: unfollowDto.userId });
       expect(user.unFollowOrganisation).toBeCalledWith(unfollowDto.organisationId);
+      expect(organisation.decrementFollowers).toBeCalled();
       expect(studentOrganisationsRepository.save).toBeCalledWith(organisation);
       expect(usersRepository.save).toBeCalledWith(user);
     });
@@ -353,17 +361,17 @@ describe('StudentOrganisationsService', () => {
       const unfollowDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
 
       jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue(null);
-      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({});
+      jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue({} as any);
 
       await expect(service.unfollow(unfollowDto)).rejects.toThrow(NotFoundException);
       expect(studentOrganisationsRepository.findOneBy).toBeCalledWith({ id: unfollowDto.organisationId });
-      expect(usersRepository.findOneBy).toBeCalledWith({ id: unfollowDto.userId });
+      expect(usersRepository.findOneBy).toBeCalledTimes(0);
     });
 
     it('should throw NotFoundException if user is not found', async () => {
       const unfollowDto: FollowOrganisationDto = { userId: 1, organisationId: 1 };
 
-      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({});
+      jest.spyOn(studentOrganisationsRepository, 'findOneBy').mockResolvedValue({} as any);
       jest.spyOn(usersRepository, 'findOneBy').mockResolvedValue(null);
 
       await expect(service.unfollow(unfollowDto)).rejects.toThrow(NotFoundException);

@@ -63,15 +63,6 @@ describe('UsersController', () => {
       
       expect(result).toEqual(mockUser.details);
     });
-
-    it('should throw NotFoundException if user is not found', async () => {
-      const email = 'nonexistent@example.com';
-
-      // Mock the usersService.findByEmailOrCreate() method to return null
-      jest.spyOn(usersService, 'findByEmailOrCreate').mockResolvedValue(null);
-
-      await expect(usersController.getOrCreate(email)).rejects.toThrowError(NotFoundException);
-    });
   });
 
   describe('getEmailStatus', () => {

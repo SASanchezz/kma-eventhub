@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional, Validate, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
-import { SORequestStatuses } from "src/modules/student-organisations/types/so-requests.statuses";
+import { SORequestStatuses } from "../../../modules/student-organisations/types/so-requests.statuses";
 
 @ValidatorConstraint({ name: 'isValidSORequestStatus', async: false })
 export class IsValidSORequestStatusConstraint implements ValidatorConstraintInterface {

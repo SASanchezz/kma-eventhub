@@ -6,10 +6,10 @@ import { Events } from "src/modules/events/events.entity";
 
 export const dbConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  host: remoteDb.HOSTNAME, //process.env.NODE_ENV == 'prod' ? remoteDb.HOSTNAME : process.env.IS_DOCKERED ? 'db' : 'localhost',
+  host: process.env.NODE_ENV == 'prod' ? remoteDb.HOSTNAME : process.env.IS_DOCKERED ? 'db' : 'localhost',
   port: 3306,
-  username: remoteDb.USERNAME, //process.env.NODE_ENV == 'prod' ? remoteDb.USERNAME : 'root',
-  password: remoteDb.PASSWORD, //process.env.NODE_ENV == 'prod' ? remoteDb.PASSWORD : 'myrootpassword',
+  username: process.env.NODE_ENV == 'prod' ? remoteDb.USERNAME : 'root',
+  password: process.env.NODE_ENV == 'prod' ? remoteDb.PASSWORD : 'myrootpassword',
   database: remoteDb.DATABASE,
   entities: [Users, StudentOrganisations, Events],
   synchronize: true,

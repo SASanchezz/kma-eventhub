@@ -46,6 +46,8 @@ describe('AuthController', () => {
   });
 
   it('should authenticate via email and return tokens', async () => {
+    process.env.TOKEN_SECRET = 'secret';
+    process.env.TOKEN_LIFE = '2592000';
     const emailAuthDto = new EmailAuthDto();
     expect(await authController.emailAuth(emailAuthDto)).toBeInstanceOf(TokensPairDto);
     expect(authService.emailAuth).toHaveBeenCalledWith(emailAuthDto);

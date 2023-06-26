@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as fs from 'fs-extra';
 import { existsSync } from 'fs';
-import { getUploadsPath } from 'src/utils/paths';
+import { getUploadsPath } from '../../utils/paths';
 
 @Injectable()
 export class UploadService {

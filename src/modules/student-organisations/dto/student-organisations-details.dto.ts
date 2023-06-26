@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { EventDetailsDto } from "src/modules/events/dto/events-details.dto";
+import { EventDetailsDto } from "../../../modules/events/dto/events-details.dto";
 
 export class StudentOrganisationDetailsDto {
   @ApiProperty()

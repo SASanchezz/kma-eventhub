@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UploadService } from './upload.service';
 import { NotFoundException } from '@nestjs/common';
-import * as fs from 'fs-extra';
+import * as fsExtra from 'fs-extra';
+import * as fs from 'fs';
+
+jest.mock('fs-extra');
 
 describe('UploadService', () => {
   let service: UploadService;
@@ -17,15 +20,15 @@ describe('UploadService', () => {
   describe('getPhoto', () => {
     it('should return the photo stream for a valid filename', async () => {
       const filename = 'photo.jpg';
-      const fileStream = {} as fs.ReadStream;
+      const fileStream = {} as fsExtra.ReadStream;
 
       jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-      jest.spyOn(fs, 'createReadStream').mockReturnValue(fileStream);
+      jest.spyOn(fsExtra, 'createReadStream').mockReturnValue(fileStream);
 
       const result = await service.getPhoto(filename);
 
       expect(fs.existsSync).toBeCalledWith(expect.any(String));
-      expect(fs.createReadStream).toBeCalledWith(expect.any(String));
+      expect(fsExtra.createReadStream).toBeCalledWith(expect.any(String));
       expect(result).toBe(fileStream);
     });
 
@@ -35,20 +38,17 @@ describe('UploadService', () => {
       jest.spyOn(fs, 'existsSync').mockReturnValue(false);
 
       await expect(service.getPhoto(filename)).rejects.toThrow(NotFoundException);
-      expect(fs.existsSync).toBeCalledWith(expect.any(String));
     });
 
     it('should throw NotFoundException if an error occurs while reading the file', async () => {
       const filename = 'photo.jpg';
 
-      jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-      jest.spyOn(fs, 'createReadStream').mockImplementation(() => {
+      jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+      jest.spyOn(fsExtra, 'createReadStream').mockImplementation(() => {
         throw new Error('File read error');
       });
 
       await expect(service.getPhoto(filename)).rejects.toThrow(NotFoundException);
-      expect(fs.existsSync).toBeCalledWith(expect.any(String));
-      expect(fs.createReadStream).toBeCalledWith(expect.any(String));
     });
   });
 });

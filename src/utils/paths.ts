@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-const FILE_IMAGES_FOLDER = path.resolve('src/images');
+const FILE_IMAGES_FOLDER = path.resolve('../../images');
 
 export const getUploadsPath = (filename = ''): string => {
   return path.join(FILE_IMAGES_FOLDER, filename);

@@ -2,7 +2,7 @@ import { BadRequestException, Controller, Get, Param, Post, Req, Res, UploadedFi
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
 import { UploadService } from './upload.service';
-import { createFileUrl } from 'src/utils/paths';
+import { createFileUrl } from '../../utils/paths';
 import { ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { UploadFileDto } from './dto/upload-file.dto';
 
